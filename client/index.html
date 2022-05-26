@@ -1,32 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
     <title>Review</title>
-</head>
-<body>
+  </head>
+  <body>
     <form class="name-collector">
-        <input type="text" class="name-input" placeholder="What's your name?">
-        <button id="name-submit">Submit</button>
+      <input type="text" class="name-input" placeholder="What's your name?" />
+      <button id="name-submit">Submit</button>
     </form>
 
     <div id="name-list-box">
-        Name List:
-        <ul class="name-list"></ul>
+      Name List:
+      <ul class="name-list"></ul>
     </div>
-    
+
     <form class="name-changer">
-        <input type="text" class="original-name" placeholder="Which name should change?">
-        <input type="text" class="changed-name" placeholder="What should I change it to?">
-        <button id="change-submit">Submit</button>
+      <input
+        type="text"
+        class="original-name"
+        placeholder="Which name should change?"
+      />
+      <input
+        type="text"
+        class="changed-name"
+        placeholder="What should I change it to?"
+      />
+      <button id="change-submit">Submit</button>
     </form>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        
+      const namesList = document.querySelector(".name-list");
+      const nameInput = document.querySelector(".name-input");
+      const clearNames = () => {
+        namesList.innerHTML = "";
+        nameInput.innerHTML = "";
+      };
     </script>
-</body>
+    <script>
+      const addNameForm = document.querySelector(".name-collector");
+      const nameFromForm = document.querySelector(".name-input");
+
+      const addNameToPage = (event) => {
+        event.preventDefault();
+        clearNames();
+        let addedName = {
+          name: nameFromForm.value,
+        };
+        axios
+          .post("http://localhost:4000/names", addedName)
+          .then((response) => {
+            let namesArr = response.data;
+            namesArr.forEach((el) => {
+              let listItem = document.createElement("li");
+              listItem.textContent = el;
+              namesList.appendChild(listItem);
+            });
+          })
+          .catch((err) => console.log(err));
+      };
+
+      addNameForm.addEventListener("submit", addNameToPage);
+    </script>
+  </body>
 </html>
